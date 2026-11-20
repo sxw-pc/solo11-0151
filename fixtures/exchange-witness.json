@@ -1,0 +1,91 @@
+{
+  "initial": {
+    "circuits": [
+      {
+        "event_id": "exchange-v1-C1",
+        "version": 1,
+        "circuit": "C1",
+        "phase": "L1",
+        "capacity_kw": 3,
+        "start": "2026-11-17T08:00:00",
+        "end": "2026-11-17T18:00:00"
+      },
+      {
+        "event_id": "exchange-v1-C2",
+        "version": 1,
+        "circuit": "C2",
+        "phase": "L2",
+        "capacity_kw": 3,
+        "start": "2026-11-17T08:00:00",
+        "end": "2026-11-17T18:00:00"
+      },
+      {
+        "event_id": "exchange-v1-C3",
+        "version": 1,
+        "circuit": "C3",
+        "phase": "L3",
+        "capacity_kw": 3,
+        "start": "2026-11-17T08:00:00",
+        "end": "2026-11-17T18:00:00"
+      }
+    ],
+    "applications": [
+      {
+        "id": "old-A",
+        "booth": "A",
+        "circuit": "C1",
+        "kw": 3,
+        "start": "2026-11-17T09:00:00",
+        "end": "2026-11-17T10:00:00",
+        "priority": 1,
+        "formal": true
+      },
+      {
+        "id": "old-B",
+        "booth": "B",
+        "circuit": "C2",
+        "kw": 3,
+        "start": "2026-11-17T09:00:00",
+        "end": "2026-11-17T10:00:00",
+        "priority": 1,
+        "formal": true
+      }
+    ]
+  },
+  "requested": {
+    "applications": [
+      {
+        "id": "swap-A",
+        "booth": "A",
+        "circuit": "C2",
+        "kw": 3,
+        "start": "2026-11-17T09:00:00",
+        "end": "2026-11-17T10:00:00",
+        "priority": 1,
+        "formal": true
+      },
+      {
+        "id": "swap-B",
+        "booth": "B",
+        "circuit": "C1",
+        "kw": 3,
+        "start": "2026-11-17T09:00:00",
+        "end": "2026-11-17T10:00:00",
+        "priority": 1,
+        "formal": true
+      }
+    ]
+  },
+  "exclusive_mock_group": {
+    "id": "exchange-proof-1",
+    "circuit_pair": [
+      "C1",
+      "C2"
+    ],
+    "participants": [
+      "A",
+      "B"
+    ],
+    "issuer": "synthetic-controller"
+  }
+}
