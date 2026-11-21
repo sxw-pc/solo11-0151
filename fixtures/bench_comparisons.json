@@ -1,0 +1,13 @@
+{
+  "comparisons": [
+    {"id":"CAL1","meter":"SPARE-1","display":3,"nominal_display":3,"allowed_difference":0},
+    {"id":"CAL2","meter":"SPARE-1","display":4,"nominal_display":3,"allowed_difference":0}
+  ],
+  "response_case": {
+    "candidate_slopes":[1,1.5,2],
+    "candidate_offsets":[-1,0,1],
+    "max_display":9,
+    "actual_range":[0,8],
+    "starting_pairs":[[2,3]]
+  }
+}
