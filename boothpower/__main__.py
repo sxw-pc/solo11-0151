@@ -4,7 +4,8 @@ from .store import connect
 from .source import read,file_record
 from . import declaration,circuit,meter,safety,report,bench_capture
 HANDLERS={'declaration-import':declaration.import_data,'circuit-plan':circuit.import_data,
-          'meter-import':meter.import_data,'safety-decide':safety.import_data,'bench-import':bench_capture.import_data}
+          'meter-import':meter.import_data,'safety-decide':safety.import_data,'bench-import':bench_capture.import_data,
+          'bench-certify':bench_capture.certify_data,'bench-plan':bench_capture.plan_data}
 DEMO=[('declaration-import','declaration_valid.json'),('circuit-plan','circuit_valid.json'),
       ('meter-import','meter_valid.json'),('safety-decide','safety_restore.json')]
 def main():

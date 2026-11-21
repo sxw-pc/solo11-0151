@@ -15,6 +15,11 @@ CREATE TABLE IF NOT EXISTS overload_case(circuit TEXT PRIMARY KEY,state TEXT NOT
 CREATE TABLE IF NOT EXISTS breaker_trip(event_id TEXT PRIMARY KEY,circuit TEXT NOT NULL,booth TEXT NOT NULL,role TEXT NOT NULL,actor TEXT NOT NULL,at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS safety_inspection(event_id TEXT PRIMARY KEY,circuit TEXT NOT NULL,remediator TEXT NOT NULL,approver TEXT NOT NULL,at TEXT NOT NULL,cooled_minutes INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS energize_permit(booth TEXT PRIMARY KEY,state TEXT NOT NULL,reason TEXT NOT NULL,contract_version INTEGER,allocation_id TEXT,meter_version INTEGER,trip_version INTEGER);
+CREATE TABLE IF NOT EXISTS bench_round(meter TEXT PRIMARY KEY,seal_round INTEGER NOT NULL,opened_at TEXT);
+CREATE TABLE IF NOT EXISTS bench_evidence(event_id TEXT PRIMARY KEY,meter TEXT NOT NULL,round_id INTEGER NOT NULL,station TEXT NOT NULL,true_load INTEGER NOT NULL,display INTEGER NOT NULL,excitation_id TEXT);
+CREATE TABLE IF NOT EXISTS field_reading(event_id TEXT PRIMARY KEY,meter TEXT NOT NULL,circuit TEXT NOT NULL,excitation_id TEXT NOT NULL,true_load INTEGER NOT NULL,display INTEGER NOT NULL,reference_bias REAL);
+CREATE TABLE IF NOT EXISTS field_excitation(id TEXT PRIMARY KEY,meter TEXT NOT NULL,circuit TEXT NOT NULL,load_before INTEGER NOT NULL,load_after INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS bench_certificate(round_id TEXT PRIMARY KEY,meter TEXT,state TEXT NOT NULL,tolerance REAL NOT NULL,corrections_json TEXT NOT NULL,counterexamples_json TEXT NOT NULL,segments_json TEXT NOT NULL,curves_json TEXT NOT NULL,certificate_json TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS decision_log(id INTEGER PRIMARY KEY,subsystem TEXT NOT NULL,object_id TEXT NOT NULL,state TEXT NOT NULL,reason TEXT NOT NULL,evidence_id TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
 """
 def connect(path):

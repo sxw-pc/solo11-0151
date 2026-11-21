@@ -25,6 +25,19 @@ python -m boothpower report --db state.sqlite
 
 对应的 `declaration_changed.json`、`circuit_overbook.json`、`meter_overload.json`、`safety_unverified.json` 会产生增容待核、峰值候补、连续超载或未见证复位。先执行正常链再导入失败证据，可观察通电许可和候补状态的跨账变化；单独运行各本账也可看到自身决定。
 
+## 量台复验与量表证书
+
+`bench-import` 保留历史单点结论（标桩 `nominal/display=3/3` 为 `calibrated`，`3/4` 为 `held`，重放幂等）。范围证书走新增入口，按同一开封轮次固定原件：
+
+```powershell
+python -m boothpower bench-certify --db state.sqlite --input fixtures/bench_certify_initial.json
+python -m boothpower bench-plan --db state.sqlite --input fixtures/bench_certify_initial.json
+```
+
+仪器在一个轮次内只能是一条固定曲线 `display=clamp(floor(slope*load+offset),0,9)`，不允许低段、高段各选一组参数。证书只对每条仍相容曲线都成立的显示值签发纠正值（默认阈值 0.5）；饱和显示 9 在真值 5..8 间无法定值时作为反例和未覆盖区段保留，不从归档读数做线性插值。起始原件（负载 2、显示 3）下恰有三条相容曲线（斜率 1/1.5/2，零点 1/0/-1），可签显示 0、2、3、4、8，显示 9 保持 `partial`。
+
+后续标定只消耗一次工位时段，规划器从现场可见的台架标准负载和现场阶跃中选期望覆盖最大的动作，并对该负载下每种可能显示给出可履约结论，不假定最顺利读数；台架负载 5 读到显示 6 可限定斜率 1、零点 1 并对显示 9 签负载 8；现场阶跃到真实 4、显示 6 只支持斜率 1.5、零点 0，可签低端、高端保留。无完整作证动作时返回工位证据缺口（如所有曲线在该负载同显示，不能当作覆盖高端）。现场联测必须绑定两份原始序列与一个共享激励，参照表偏差仅留存、不作绝对真值；重新开封后旧轮次原件不得支撑新一轮。
+
 | 账 | 独立结论 | 跨账影响 |
 | --- | --- | --- |
 | 展商负荷契约 | 签约资格、迟到增容和设备清单 | 批准增容后要求重排原容量分配 |

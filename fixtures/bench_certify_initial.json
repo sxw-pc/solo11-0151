@@ -1,0 +1,16 @@
+{
+  "meter": "SPARE-1",
+  "round_id": 1,
+  "station_scope": ["bench", "field"],
+  "tolerance": 0.5,
+  "evidence_prefix": "CAL",
+  "response_case": {
+    "candidate_slopes": [1, 1.5, 2],
+    "candidate_offsets": [-1, 0, 1],
+    "max_display": 9,
+    "actual_range": [0, 8],
+    "starting_pairs": [[2, 3]]
+  },
+  "bench_candidates": [5, 3],
+  "field_candidates": [8]
+}

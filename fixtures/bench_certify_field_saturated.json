@@ -1,0 +1,32 @@
+{
+  "meter": "SPARE-1",
+  "round_id": 1,
+  "station_scope": ["field"],
+  "tolerance": 0.5,
+  "evidence_prefix": "FIELDSAT",
+  "response_case": {
+    "candidate_slopes": [1, 1.5, 2],
+    "candidate_offsets": [-1, 0, 1],
+    "max_display": 9,
+    "actual_range": [0, 8],
+    "starting_pairs": [[2, 3]]
+  },
+  "field_sets": [
+    {
+      "readings": [
+        {"event_id": "FIELD-SPARE-1-SAT", "meter": "SPARE-1", "circuit": "C1",
+         "excitation_id": "EXC-STEP-2-8", "true_load": 8, "display": 9},
+        {"event_id": "FIELD-REF-1-SAT", "meter": "REF-1", "circuit": "C1",
+         "excitation_id": "EXC-STEP-2-8", "true_load": 8, "display": 8,
+         "reference_bias": 0.0}
+      ],
+      "excitation": {
+        "id": "EXC-STEP-2-8",
+        "circuit": "C1",
+        "load_before": 2,
+        "load_after": 8
+      }
+    }
+  ],
+  "field_candidates": [8]
+}

@@ -1,0 +1,32 @@
+{
+  "meter": "SPARE-1",
+  "round_id": 1,
+  "station_scope": ["field"],
+  "tolerance": 0.5,
+  "evidence_prefix": "FIELDPART",
+  "response_case": {
+    "candidate_slopes": [1, 1.5, 2],
+    "candidate_offsets": [-1, 0, 1],
+    "max_display": 9,
+    "actual_range": [0, 8],
+    "starting_pairs": [[2, 3]]
+  },
+  "field_sets": [
+    {
+      "readings": [
+        {"event_id": "FIELD-SPARE-1-STEP4", "meter": "SPARE-1", "circuit": "C1",
+         "excitation_id": "EXC-STEP-2-4", "true_load": 4, "display": 6},
+        {"event_id": "FIELD-REF-1-STEP4", "meter": "REF-1", "circuit": "C1",
+         "excitation_id": "EXC-STEP-2-4", "true_load": 4, "display": 5,
+         "reference_bias": -1.0}
+      ],
+      "excitation": {
+        "id": "EXC-STEP-2-4",
+        "circuit": "C1",
+        "load_before": 2,
+        "load_after": 4
+      }
+    }
+  ],
+  "field_candidates": [3, 4]
+}
