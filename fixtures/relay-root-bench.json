@@ -1,0 +1,9 @@
+{
+ "observations":[
+   {"id":"relay-note-1","case":"R-1","root_hint":null,"dropped":["U","V"]},
+   {"id":"relay-note-2","case":"R-1","root_hint":"U","dropped":["U","V"]}
+ ],
+ "clocks":{"U":{"reading":10,"offset_bounds":[-2,2]},"V":{"reading":10,"offset_bounds":[-2,2]}},
+ "permitted_ordering":[{"root":"U","edges":[9,11]},{"root":"V","edges":[11,9]}],
+ "local_evidence_options":["common-edge-recorder","drive-contact-custody"]
+}
