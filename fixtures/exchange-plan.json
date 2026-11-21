@@ -1,0 +1,39 @@
+{
+  "comment": "换位清单：甲乙满载回路互换（各 3 单位，相位各容 3），C3 同容量暂留，三次独立移位完成。全部合成容量单位与模拟设备回执，不接真实供电设备。",
+  "steps": [
+    {
+      "contracts": [
+        {"event_id": "contract-A", "booth": "A", "start": "2026-11-17T08:00:00", "end": "2026-11-17T18:00:00", "signer": "venue"},
+        {"event_id": "contract-B", "booth": "B", "start": "2026-11-17T08:00:00", "end": "2026-11-17T18:00:00", "signer": "venue"}
+      ],
+      "declarations": [
+        {"event_id": "load-A1", "booth": "A", "version": 1, "kw": 3, "at": "2026-11-17T08:30:00", "approved_by": "electrician", "devices": ["light", "screen"]},
+        {"event_id": "load-B1", "booth": "B", "version": 1, "kw": 3, "at": "2026-11-17T08:31:00", "approved_by": "electrician", "devices": ["light", "demo"]}
+      ]
+    },
+    {
+      "circuits": [
+        {"event_id": "exchange-v1-C1", "version": 1, "circuit": "C1", "phase": "L1", "capacity_kw": 3, "start": "2026-11-17T08:00:00", "end": "2026-11-17T18:00:00"},
+        {"event_id": "exchange-v1-C2", "version": 1, "circuit": "C2", "phase": "L2", "capacity_kw": 3, "start": "2026-11-17T08:00:00", "end": "2026-11-17T18:00:00"},
+        {"event_id": "exchange-v1-C3", "version": 1, "circuit": "C3", "phase": "L3", "capacity_kw": 3, "start": "2026-11-17T08:00:00", "end": "2026-11-17T18:00:00"}
+      ],
+      "applications": [
+        {"id": "old-A", "booth": "A", "circuit": "C1", "kw": 3, "start": "2026-11-17T09:00:00", "end": "2026-11-17T10:00:00", "priority": 1, "formal": true},
+        {"id": "old-B", "booth": "B", "circuit": "C2", "kw": 3, "start": "2026-11-17T09:00:00", "end": "2026-11-17T10:00:00", "priority": 1, "formal": true}
+      ]
+    },
+    {
+      "applications": [
+        {"id": "swap-A", "booth": "A", "circuit": "C2", "kw": 3, "start": "2026-11-17T09:00:00", "end": "2026-11-17T10:00:00", "priority": 1, "formal": true},
+        {"id": "swap-B", "booth": "B", "circuit": "C1", "kw": 3, "start": "2026-11-17T09:00:00", "end": "2026-11-17T10:00:00", "priority": 1, "formal": true}
+      ]
+    },
+    {
+      "exchanges": [
+        {"id": "ex-1", "applications": ["swap-A", "swap-B"]}
+      ]
+    },
+    {},
+    {}
+  ]
+}

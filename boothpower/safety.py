@@ -59,10 +59,11 @@ def reconcile_all(db):
             elif allocation['kw']>dec['allowed_kw']:
                 state,reason='blocked','allocation exceeds signed load'
             else:state,reason='energized','contract allocation meter and safety all valid'
-        old=db.execute('SELECT state,reason FROM energize_permit WHERE booth=?',(booth,)).fetchone()
-        if not old or (old['state'],old['reason'])!=(state,reason):
+        old=db.execute('SELECT state,reason,contract_version,allocation_id,meter_version,trip_version FROM energize_permit WHERE booth=?',(booth,)).fetchone()
+        current_row=(state,reason,dec['version'] if dec else None,allocation['id'] if allocation else None,meter['version'] if meter else None,trips)
+        if not old or (old['state'],old['reason'],old['contract_version'],old['allocation_id'],old['meter_version'],old['trip_version'])!=current_row:
             db.execute('INSERT INTO energize_permit(booth,state,reason,contract_version,allocation_id,meter_version,trip_version) VALUES(?,?,?,?,?,?,?) ON CONFLICT(booth) DO UPDATE SET state=excluded.state,reason=excluded.reason,contract_version=excluded.contract_version,allocation_id=excluded.allocation_id,meter_version=excluded.meter_version,trip_version=excluded.trip_version',
-                       (booth,state,reason,dec['version'] if dec else None,allocation['id'] if allocation else None,meter['version'] if meter else None,trips))
+                       (booth,*current_row))
             log(db,'safety',booth,state,reason)
         out.append({'booth':booth,'state':state,'reason':reason})
     return out

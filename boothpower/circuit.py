@@ -1,5 +1,7 @@
+import json
 from .source import record
 from .store import log
+from . import exchange
 
 def overlap(a,b,c,d):return a<d and c<b
 def current(db,circuit):
@@ -87,7 +89,24 @@ def import_data(db,data):
             if reason:db.execute('INSERT INTO waiting_application(id,reason,rank) VALUES(?,?,?)',(a['id'],reason,a['priority']))
             log(db,'circuit',a['id'],state,reason or 'capacity confirmed',a['id'])
             out.append({'id':a['id'],'state':state,'reason':reason})
+        for p in data.get('group_permits',[]):
+            if record(db,p['id'],'group_permit',p):
+                db.execute('INSERT INTO group_permit(id,participants_json,circuits_json,issuer) VALUES(?,?,?,?)',
+                           (p['id'],json.dumps(sorted(p.get('participants') or [])),
+                            json.dumps(sorted(p.get('circuit_pair') or p.get('circuits') or [])),p.get('issuer','')))
+                log(db,'exchange',p['id'],'group_permit','group shift permit recorded',p['id'])
+        for r in data.get('device_receipts',[]):
+            if record(db,r['id'],'device_receipt',r):
+                db.execute('INSERT INTO device_receipt(id,kind,permit_id,members_json,moves_json,device,at) VALUES(?,?,?,?,?,?,?)',
+                           (r['id'],r.get('kind') or ('group' if r.get('permit') else 'shift'),r.get('permit'),
+                            json.dumps(sorted(r.get('members') or [])),json.dumps(r.get('moves') or {},sort_keys=True),
+                            r.get('device',exchange.DEVICE),r.get('at','')))
+                log(db,'exchange',r['id'],'device_receipt','device receipt recorded',r['id'])
+        for ex in data.get('exchanges',[]):
+            result=exchange.register(db,ex)
+            if result:out.append(result)
         promote(db)
+        out.extend(exchange.advance(db))
         from .safety import reconcile_all
         reconcile_all(db)
     return out

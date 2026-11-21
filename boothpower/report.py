@@ -1,9 +1,11 @@
 import hashlib,json
 from .store import connect
-TABLES=['evidence','declaration_decision','power_allocation','waiting_application','meter_reading','overload_case','breaker_trip','safety_inspection','energize_permit','decision_log']
+TABLES=['evidence','declaration_decision','power_allocation','waiting_application','meter_reading','overload_case','breaker_trip','safety_inspection','energize_permit','decision_log','exchange_plan','exchange_action','group_permit','device_receipt']
 def build(db):
     out={t:[dict(r) for r in db.execute(f'SELECT * FROM {t} ORDER BY 1')] for t in TABLES}
     for e in out['evidence']:e['raw']=e['raw'].decode('utf8')
+    from . import exchange
+    out['exchange_status']=[exchange.status(db,r['id']) for r in db.execute('SELECT id FROM exchange_plan ORDER BY rowid')]
     return out
 def audit(db):
     from . import declaration,circuit,meter,safety
@@ -17,7 +19,7 @@ def audit(db):
             if hashlib.sha256(r['raw']).hexdigest()!=r['sha']:
                 return {'journal_count':len(rows),'replay_ok':False,'reason':'raw source hash mismatch'}
             handlers[r['command']](fresh,json.loads(r['raw']))
-        compare=['declaration_decision','power_allocation','waiting_application','meter_reading','overload_case','energize_permit']
+        compare=['declaration_decision','power_allocation','waiting_application','meter_reading','overload_case','energize_permit','exchange_plan','exchange_action','group_permit','device_receipt']
         mismatch=[]
         for t in compare:
             a=[tuple(r) for r in db.execute(f'SELECT * FROM {t} ORDER BY 1')]

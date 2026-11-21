@@ -16,6 +16,10 @@ CREATE TABLE IF NOT EXISTS breaker_trip(event_id TEXT PRIMARY KEY,circuit TEXT N
 CREATE TABLE IF NOT EXISTS safety_inspection(event_id TEXT PRIMARY KEY,circuit TEXT NOT NULL,remediator TEXT NOT NULL,approver TEXT NOT NULL,at TEXT NOT NULL,cooled_minutes INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS energize_permit(booth TEXT PRIMARY KEY,state TEXT NOT NULL,reason TEXT NOT NULL,contract_version INTEGER,allocation_id TEXT,meter_version INTEGER,trip_version INTEGER);
 CREATE TABLE IF NOT EXISTS decision_log(id INTEGER PRIMARY KEY,subsystem TEXT NOT NULL,object_id TEXT NOT NULL,state TEXT NOT NULL,reason TEXT NOT NULL,evidence_id TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS exchange_plan(id TEXT PRIMARY KEY,state TEXT NOT NULL,reason TEXT NOT NULL,targets_json TEXT NOT NULL,kw_json TEXT NOT NULL,formal_json TEXT NOT NULL,apps_json TEXT NOT NULL,start TEXT NOT NULL,end TEXT NOT NULL,report_json TEXT NOT NULL,version INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS exchange_action(id TEXT PRIMARY KEY,exchange_id TEXT NOT NULL,seq INTEGER NOT NULL,kind TEXT NOT NULL,moves_json TEXT NOT NULL,receipt_id TEXT,state TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS group_permit(id TEXT PRIMARY KEY,participants_json TEXT NOT NULL,circuits_json TEXT NOT NULL,issuer TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS device_receipt(id TEXT PRIMARY KEY,kind TEXT NOT NULL,permit_id TEXT,members_json TEXT NOT NULL,moves_json TEXT NOT NULL,device TEXT NOT NULL,at TEXT NOT NULL);
 """
 def connect(path):
     db=sqlite3.connect(path);db.row_factory=sqlite3.Row;db.executescript(SCHEMA);return db

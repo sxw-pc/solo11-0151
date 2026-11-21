@@ -9,11 +9,24 @@ DEMO=[('declaration-import','declaration_valid.json'),('circuit-plan','circuit_v
       ('meter-import','meter_valid.json'),('safety-decide','safety_restore.json')]
 def main():
     p=argparse.ArgumentParser(prog='boothpower')
-    p.add_argument('command',choices=[*HANDLERS,'demo','report','audit'])
+    p.add_argument('command',choices=[*HANDLERS,'demo','report','audit','exchange-run'])
     p.add_argument('--db',default='state.sqlite');p.add_argument('--input')
     a=p.parse_args();db=connect(a.db)
     if a.command=='report':print(report.render(db));return
     if a.command=='audit':print(json.dumps(report.audit(db),ensure_ascii=False,indent=2));return
+    if a.command=='exchange-run':
+        if not a.input:p.error('--input required')
+        from . import exchange
+        data,raw=read(a.input);steps=[]
+        for step in data['steps']:
+            raw_step=json.dumps(step,sort_keys=True,ensure_ascii=False).encode('utf8')
+            if any(k in step for k in ('contracts','declarations')):
+                result=declaration.import_data(db,step);file_record(db,'declaration-import',raw_step)
+            else:
+                result=circuit.import_data(db,step);file_record(db,'circuit-plan',raw_step)
+            steps.append(result)
+        statuses=[exchange.status(db,r['id']) for r in db.execute('SELECT id FROM exchange_plan ORDER BY rowid')]
+        print(json.dumps({'steps':steps,'exchanges':statuses,'audit':report.audit(db)},ensure_ascii=False,indent=2));return
     if a.command=='demo':
         root=Path(__file__).resolve().parents[1]/'fixtures';steps=[]
         for command,name in DEMO:
