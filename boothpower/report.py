@@ -1,14 +1,15 @@
 import hashlib,json
 from .store import connect
-TABLES=['evidence','declaration_decision','power_allocation','waiting_application','meter_reading','overload_case','breaker_trip','safety_inspection','energize_permit','decision_log']
+TABLES=['evidence','declaration_decision','power_allocation','waiting_application','meter_reading','overload_case','breaker_trip','safety_inspection','energize_permit','relay_case_context','relay_meter_reading','wiring_attestation','common_edge_record','drive_contact_chain','relay_retraction','relay_case','relay_work_order','decision_log']
 def build(db):
     out={t:[dict(r) for r in db.execute(f'SELECT * FROM {t} ORDER BY 1')] for t in TABLES}
     for e in out['evidence']:e['raw']=e['raw'].decode('utf8')
     return out
 def audit(db):
-    from . import declaration,circuit,meter,safety
+    from . import declaration,circuit,meter,safety,relay_capture
     handlers={'declaration-import':declaration.import_data,'circuit-plan':circuit.import_data,
-              'meter-import':meter.import_data,'safety-decide':safety.import_data}
+              'meter-import':meter.import_data,'safety-decide':safety.import_data,
+              'relay-import':relay_capture.import_data}
     rows=db.execute('SELECT * FROM journal ORDER BY id').fetchall()
     if not rows:return {'journal_count':0,'replay_ok':False,'reason':'no CLI source files'}
     fresh=connect(':memory:')
@@ -17,7 +18,7 @@ def audit(db):
             if hashlib.sha256(r['raw']).hexdigest()!=r['sha']:
                 return {'journal_count':len(rows),'replay_ok':False,'reason':'raw source hash mismatch'}
             handlers[r['command']](fresh,json.loads(r['raw']))
-        compare=['declaration_decision','power_allocation','waiting_application','meter_reading','overload_case','energize_permit']
+        compare=['declaration_decision','power_allocation','waiting_application','meter_reading','overload_case','energize_permit','relay_case_context','relay_meter_reading','wiring_attestation','common_edge_record','drive_contact_chain','relay_retraction','relay_case','relay_work_order']
         mismatch=[]
         for t in compare:
             a=[tuple(r) for r in db.execute(f'SELECT * FROM {t} ORDER BY 1')]

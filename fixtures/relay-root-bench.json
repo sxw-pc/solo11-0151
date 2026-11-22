@@ -3,7 +3,12 @@
    {"id":"relay-note-1","case":"R-1","root_hint":null,"dropped":["U","V"]},
    {"id":"relay-note-2","case":"R-1","root_hint":"U","dropped":["U","V"]}
  ],
- "clocks":{"U":{"reading":10,"offset_bounds":[-2,2]},"V":{"reading":10,"offset_bounds":[-2,2]}},
+ "meter_readings":[
+   {"event_id":"read-U-1","case":"R-1","node":"U","contact":"U-edge","reading":10},
+   {"event_id":"read-R-1","case":"R-1","node":"R","contact":"R-edge","reading":10},
+   {"event_id":"read-V-1","case":"R-1","node":"V","contact":"V-edge","reading":10}
+ ],
+ "clocks":{"U":{"reading":10,"offset_bounds":[-2,2]},"V":{"reading":10,"offset_bounds":[-2,2]},"R":{"reading":10,"offset_bounds":[-2,2]}},
  "permitted_ordering":[{"root":"U","edges":[9,11]},{"root":"V","edges":[11,9]}],
  "local_evidence_options":["common-edge-recorder","drive-contact-custody"]
 }

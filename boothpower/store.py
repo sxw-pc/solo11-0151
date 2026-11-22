@@ -15,6 +15,14 @@ CREATE TABLE IF NOT EXISTS overload_case(circuit TEXT PRIMARY KEY,state TEXT NOT
 CREATE TABLE IF NOT EXISTS breaker_trip(event_id TEXT PRIMARY KEY,circuit TEXT NOT NULL,booth TEXT NOT NULL,role TEXT NOT NULL,actor TEXT NOT NULL,at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS safety_inspection(event_id TEXT PRIMARY KEY,circuit TEXT NOT NULL,remediator TEXT NOT NULL,approver TEXT NOT NULL,at TEXT NOT NULL,cooled_minutes INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS energize_permit(booth TEXT PRIMARY KEY,state TEXT NOT NULL,reason TEXT NOT NULL,contract_version INTEGER,allocation_id TEXT,meter_version INTEGER,trip_version INTEGER);
+CREATE TABLE IF NOT EXISTS relay_case_context(case_id TEXT NOT NULL,round_id TEXT NOT NULL,clocks_json TEXT NOT NULL,ordering_json TEXT NOT NULL,options_json TEXT NOT NULL,PRIMARY KEY(case_id,round_id));
+CREATE TABLE IF NOT EXISTS relay_meter_reading(event_id TEXT PRIMARY KEY,case_id TEXT NOT NULL,round_id TEXT NOT NULL,node TEXT NOT NULL,contact TEXT,reading INTEGER,missing INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS wiring_attestation(event_id TEXT PRIMARY KEY,case_id TEXT NOT NULL,round_id TEXT NOT NULL,version TEXT NOT NULL,signers_json TEXT NOT NULL,lines_json TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS common_edge_record(event_id TEXT PRIMARY KEY,case_id TEXT NOT NULL,round_id TEXT NOT NULL,version TEXT,signers_json TEXT NOT NULL,window_complete INTEGER NOT NULL,cleared_after_window INTEGER NOT NULL,edges_json TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS drive_contact_chain(event_id TEXT PRIMARY KEY,case_id TEXT NOT NULL,round_id TEXT NOT NULL,signers_json TEXT NOT NULL,links_json TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS relay_retraction(event_id TEXT PRIMARY KEY,case_id TEXT NOT NULL,round_id TEXT NOT NULL,target_event_id TEXT NOT NULL,signers_json TEXT NOT NULL,reason TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS relay_case(case_id TEXT NOT NULL,round_id TEXT NOT NULL,state TEXT NOT NULL,owner TEXT,reason TEXT NOT NULL,compatible_json TEXT NOT NULL,action_json TEXT,conflicts_json TEXT NOT NULL,version INTEGER NOT NULL,PRIMARY KEY(case_id,round_id));
+CREATE TABLE IF NOT EXISTS relay_work_order(id TEXT PRIMARY KEY,case_id TEXT NOT NULL,round_id TEXT NOT NULL,owner TEXT NOT NULL,state TEXT NOT NULL,basis_json TEXT NOT NULL,evidence_json TEXT NOT NULL,version INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS decision_log(id INTEGER PRIMARY KEY,subsystem TEXT NOT NULL,object_id TEXT NOT NULL,state TEXT NOT NULL,reason TEXT NOT NULL,evidence_id TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
 """
 def connect(path):
